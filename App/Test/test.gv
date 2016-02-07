@@ -1,0 +1,6 @@
+graph ER {
+	node [shape=ellipse width=10]
+	name0 [label=name color=red width=10]
+	name1 [label=name]
+		name0 -- name1 [color=blue dir=forward edgetooltip="a tool tip"]
+}

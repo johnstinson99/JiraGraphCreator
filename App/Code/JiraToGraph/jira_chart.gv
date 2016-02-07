@@ -1,0 +1,15 @@
+graph "Jira Chart" {
+	node [shape=ellipse]
+	Open
+	"Ready for development"
+	"In Development"
+	"In Testing"
+	Closed
+		"In Development" -- "In Testing" [dir=forward]
+		"In Testing" -- Closed [dir=forward]
+		Open -- "In Development" [dir=forward]
+		"In Development" -- "In Testing" [dir=forward]
+		"In Testing" -- Closed [dir=forward]
+		Open -- "Ready for development" [dir=forward]
+		"Ready for development" -- "In Development" [dir=forward]
+}
