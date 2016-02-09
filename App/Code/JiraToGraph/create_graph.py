@@ -1,5 +1,6 @@
 from os.path import join
-from App.Code.JiraToGraph.jira_graph_creator import JiraReader, GraphDrawer
+from App.Code.JiraToGraph.jira_graph_creator import JiraReader
+from App.Code.JiraToGraph.jira_graph_drawer import GraphDrawer
 
 my_dir = 'C:\\Users\\John\\Documents\\2016\\Python\\JiraStates'
 f = join(my_dir, 'jira_states.csv')

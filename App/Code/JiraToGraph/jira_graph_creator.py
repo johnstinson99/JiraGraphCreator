@@ -1,6 +1,6 @@
 import pandas as pd
-from graphviz import *
 import numpy as np
+import json
 
 
 class Edge:
@@ -62,6 +62,8 @@ class CombinedEdge(Edge):
         self.day_diff_50_percentile = np.percentile(a, 50)
         self.day_diff_90_percentile = np.percentile(a, 90)
 
+    def as_list(self):
+        return [self.from_string, self.to_string, self.width_0_to_1, self.day_diff_50_percentile_0_to_1, self.day_diff_10_percentile, self.day_diff_50_percentile, self.day_diff_90_percentile]
 
 class JiraReader:
 
@@ -69,7 +71,7 @@ class JiraReader:
         self.file_and_path_string = my_file_and_path_string
         self.jira_df = pd.read_csv(my_file_and_path_string)
         self.issue_list = pd.Series.unique(self.jira_df['IssueNo'])
-        self.state_list = pd.Series.unique(self.jira_df['To'])
+        self.unique_node_list = list(pd.Series.unique(self.jira_df['To']))
         edge_df = self.jira_df[['From', 'To', 'DayDiff']]
         self.single_edge_list = [SingleEdge(row[0], row[1], row[2]) for row in edge_df.values if row[0] != 'Undefined']
         self.unique_combined_edge_list = []
@@ -77,6 +79,14 @@ class JiraReader:
         self.max_edge_count = 0
         self.max_day_diff_50_percentile = 0.0
         self.calc_line_widths_and_50_percentile_day_diffs()
+
+    def get_unique_node_list(self):
+        return self.unique_node_list
+
+    def get_unique_combined_edge_list(self):
+        edge_list = [my_edge.as_list() for my_edge in self.unique_combined_edge_list]
+        # print('edge_list = ' + str(edge_list))
+        return edge_list
 
     def populate_unique_combined_edge_list(self):
         for my_single_edge in self.single_edge_list:
@@ -106,7 +116,7 @@ class JiraReader:
     def __str__(self):
         str1 = 'df = \n' + str(self.jira_df) + '\n'
         str2 = 'issue_list = ' + str(self.issue_list) + '\n'
-        str3 = 'state_list = ' + str(self.state_list) + '\n'
+        str3 = 'state_list = ' + str(self.unique_node_list) + '\n'
         # str4 = 'edge_tuple_set = ' + str(self.edge_tuple_set) + '\n'
         str4 = '\nedge_object_list = \n'
         for my_edge in self.single_edge_list:
@@ -115,32 +125,5 @@ class JiraReader:
         for my_edge in self.unique_combined_edge_list:
             str5 += '\t' + str(my_edge) + '\n'
         return str1 + str2 + str3 + str4 + str5
-
-
-class GraphDrawer:
-
-    def __init__(self, jira_reader):
-        self.graph = Graph('Jira Graph', filename='jira_graph.gv', engine='fdp')   #circo fdp neato
-        self.graph.attr('node', shape = 'ellipse')  # width = '10',  color = 'red'
-
-        # SET UP THE NODES
-        for my_node in jira_reader.state_list:
-            self.graph.node(my_node)
-            # mygraph.node('name0', label='name', color='red', width='10')
-
-        #NOW JOIN THE NODES WITH EDGES
-        # mygraph.edge('name0', 'name1', color='blue', dir='forward', edgetooltip='a tool tip')
-        for my_combined_edge in jira_reader.unique_combined_edge_list:
-            self.graph.edge(my_combined_edge.from_string,
-                            my_combined_edge.to_string,
-                            dir = 'forward',
-                            # label = str(my_combined_edge.count) + ", " + str(int(my_combined_edge.day_diff_50_percentile)),
-                            label = str(int(my_combined_edge.day_diff_50_percentile)) + "d Median",
-                            penwidth = str(my_combined_edge.width_0_to_1 * 5),
-                            len = str(my_combined_edge.day_diff_50_percentile_0_to_1 * 5))
-
-    def draw_chart(self):
-        #FINALLY DISPLAY THE GRAPH
-        self.graph.view()
 
 
