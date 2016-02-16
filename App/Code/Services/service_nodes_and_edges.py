@@ -2,10 +2,11 @@
 # or http://localhost:5000/nodes_and_edges
 
 from os.path import join
-from App.Code.JiraToGraph.jira_graph_creator import JiraReader
-from flask import Flask, jsonify  # , abort, make_response
-from App.Code.JiraToGraph.service_crossdomain_http_utils import crossdomain
 
+from flask import Flask, jsonify  # , abort, make_response
+
+from App.Code.Data_NodesAndEdgesFromCSV.create_nodes_and_edges_from_csv import JiraReader
+from App.Code.Data_Services.service_crossdomain_http_utils import crossdomain
 
 my_dir = 'C:\\Users\\John\\Documents\\2016\\Python\\JiraStates'
 f = join(my_dir, 'jira_states.csv')
