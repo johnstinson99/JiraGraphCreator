@@ -9,8 +9,8 @@ from App.Code.Data_NodesAndEdgesFromCSV.create_nodes_and_edges_from_csv import J
 from App.Code.Data_Services.service_crossdomain_http_utils import crossdomain
 from App.Code.Views_Seaborn.seaborn_analysis import SeabornGenerator
 
-my_path = 'C:\\Users\\John\\Documents\\2016\\Python\\JiraStates'
-my_file_and_path = join(my_path, 'jira_states.csv')
+my_source_path = 'C:\\Users\\John\\Documents\\2016\\Python\\JiraStates'
+my_file_and_path = join(my_source_path, 'jira_states.csv')
 my_jira_reader = JiraReader(my_file_and_path)
 print(my_jira_reader)
 jira_df = my_jira_reader.get_jira_df()
@@ -20,17 +20,21 @@ print('nodes_list = ' + str(node_list))
 edge_dict_list = my_jira_reader.get_unique_combined_edge_dict_list()
 print('edges_list = ' + str(edge_dict_list))
 
-my_seaborn_gen = SeabornGenerator(my_path, jira_df)
-my_png_dict = my_seaborn_gen.get_filename_dict()
+my_root_output_path = 'C:\\Users\\John\\Documents\\Visual Studio 2013\\Projects\\DirectedGraph4\\CrosswordViewer'
+my_relative_output_path = 'seaborne_images'
+my_seaborn_gen = SeabornGenerator(my_root_output_path, my_relative_output_path, jira_df)
+# my_output_path = 'C:\\Users\\John\\Documents\\Visual Studio 2013\\Projects\\DirectedGraph4\\CrosswordViewer\\seaborne_images'
+# my_seaborn_gen = SeabornGenerator(my_output_path, jira_df)
+my_png_list = my_seaborn_gen.get_png_list()
 # my_seaborn_gen.open_files_in_chrome(my_dict)
-print("my_dict = " + str(my_png_dict))
+print("my_dict = " + str(my_png_list))
 
 app = Flask(__name__)
 @app.route('/nodes_and_edges')
 # This is the critical line. It calls crossdomain function which allows the calling app to call it on localhost.
 @crossdomain(origin='*')
 def node_service():
-    return jsonify({'nodes': node_list, 'edges': edge_dict_list, 'pngs': my_png_dict})
+    return jsonify({'nodes': node_list, 'edges': edge_dict_list, 'pngs': my_png_list})
 
 
 # @app.route('/todo/api/v1.0/tasks', methods=['GET'])  # all tasks
