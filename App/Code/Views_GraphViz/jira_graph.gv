@@ -1,0 +1,15 @@
+graph "Jira Graph" {
+	node [shape=ellipse]
+	Open
+	"In Testing"
+	"In Development"
+	Closed
+	Fix
+	"Ready for development"
+		Open -- "Ready for development" [label="32d Median" dir=forward len=0.64 penwidth=1.6666666666666665]
+		"Ready for development" -- "In Development" [label="13d Median" dir=forward len=0.26 penwidth=1.6666666666666665]
+		"In Development" -- "In Testing" [label="5d Median" dir=forward len=0.1 penwidth=5.0]
+		"In Testing" -- Fix [label="20d Median" dir=forward len=0.4 penwidth=1.6666666666666665]
+		"In Testing" -- Closed [label="82d Median" dir=forward len=1.64 penwidth=5.0]
+		Open -- "In Development" [label="250d Median" dir=forward len=5.0 penwidth=3.333333333333333]
+}
