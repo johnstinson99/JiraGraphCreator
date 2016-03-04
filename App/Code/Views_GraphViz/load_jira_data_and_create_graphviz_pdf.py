@@ -1,6 +1,6 @@
 from os.path import join
 
-from App.Code.Data_NodesAndEdgesFromCSV.create_nodes_and_edges_from_csv import JiraReader
+from App.Code.Data_NodesAndEdgesFromDF.create_nodes_and_edges_from_df import JiraReader
 from App.Code.Views_GraphViz.jira_graphviz_drawer import GraphDrawer
 
 my_dir = 'C:\\Users\\John\\Documents\\2016\\Python\\JiraStates'

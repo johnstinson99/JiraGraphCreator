@@ -2,22 +2,26 @@
 # or http://localhost:5000/nodes_and_edges
 
 from os.path import join
-
 from flask import Flask, jsonify  # , abort, make_response
 
-from App.Code.Data_NodesAndEdgesFromCSV.create_nodes_and_edges_from_csv import JiraReader
+from App.Code.Jira_DF_Reader.jira_df_reader import JiraDFReader
+from App.Code.Data_NodesAndEdgesFromDF.create_nodes_and_edges_from_df import NodeAndEdgeCreatorFromDF
 from App.Code.Data_Services.service_crossdomain_http_utils import crossdomain
 from App.Code.Views_Seaborn.seaborn_analysis import SeabornGenerator
 
 my_source_path = 'C:\\Users\\John\\Documents\\2016\\Python\\JiraStates'
-my_file_and_path = join(my_source_path, 'jira_states.csv')
-my_jira_reader = JiraReader(my_file_and_path)
-print(my_jira_reader)
-jira_df = my_jira_reader.get_jira_df()
+my_csv_file_and_path = join(my_source_path, 'jira_states.csv')
 
-node_list = my_jira_reader.get_unique_node_dict_list()
+my_jira_df_reader = JiraDFReader(my_csv_file_and_path)
+jira_df = my_jira_df_reader.get_final_df()
+
+my_node_and_edge_creator = NodeAndEdgeCreatorFromDF(jira_df)
+print(my_node_and_edge_creator)
+# jira_df = my_jira_reader.get_jira_df()
+
+node_list = my_node_and_edge_creator.get_unique_node_dict_list()
 print('nodes_list = ' + str(node_list))
-edge_dict_list = my_jira_reader.get_unique_combined_edge_dict_list()
+edge_dict_list = my_node_and_edge_creator.get_unique_combined_edge_dict_list()
 print('edges_list = ' + str(edge_dict_list))
 
 my_root_output_path = 'C:\\Users\\John\\Documents\\Visual Studio 2013\\Projects\\DirectedGraph4\\CrosswordViewer'
